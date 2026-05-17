@@ -1,0 +1,6 @@
+CREATE TABLE roles (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
