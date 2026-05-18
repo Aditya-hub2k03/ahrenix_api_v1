@@ -1,6 +1,9 @@
 # ahrenix_api_v1
 
-<h1>AHRenix: A HRe nix</h1>
+<hgroup>
+<h1>AHRenix</h1>
+<p>A HRe nix</p>
+<hgroup>
 <p>Meaning: A Human-Relationship(HR) assurance(nix- old english term)</p>
 A spring boot backend api<br>
 Java - 17<br>
