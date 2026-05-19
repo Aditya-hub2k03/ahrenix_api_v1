@@ -3,6 +3,7 @@ package com.yp.ahrenix.controller;
 import com.yp.ahrenix.dto.common.ApiResponse;
 import com.yp.ahrenix.entities.Account;
 import com.yp.ahrenix.entities.User;
+import com.yp.ahrenix.mapper.AccountMapper;
 import com.yp.ahrenix.security.UserPrincipal;
 import com.yp.ahrenix.service.AccountService;
 import com.yp.ahrenix.service.UserService;
@@ -22,6 +23,8 @@ public class AccountController {
 
     private final UserService userService;
 
+    private final AccountMapper accountMapper;
+
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<Account>>> getMyAccounts(
             @AuthenticationPrincipal UserPrincipal principal
@@ -30,6 +33,7 @@ public class AccountController {
         User user = userService.getUserByEmail(
                 principal.getEmail()
         );
+        
 
         List<Account> accounts =
                 accountService.getAccountsByUser(user);
