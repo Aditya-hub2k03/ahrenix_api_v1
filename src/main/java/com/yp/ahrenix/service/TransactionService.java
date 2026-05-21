@@ -1,8 +1,13 @@
 package com.yp.ahrenix.service;
 
+import com.yp.ahrenix.dto.request.TransactionRequest;
+import com.yp.ahrenix.dto.response.TransactionResponse;
 import com.yp.ahrenix.entities.Transaction;
+import com.yp.ahrenix.entities.User;
 import com.yp.ahrenix.exception.ResourceNotFoundException;
 import com.yp.ahrenix.repository.TransactionRepository;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +27,11 @@ public class TransactionService {
                                 "Transaction not found"
                         )
                 );
+    }
+
+    public TransactionResponse transferMoney(User user, TransactionRequest request, String remoteAddr) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'transferMoney'");
     }
 
 }
