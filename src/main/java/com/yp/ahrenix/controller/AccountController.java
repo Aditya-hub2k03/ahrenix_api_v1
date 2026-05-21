@@ -1,12 +1,14 @@
 package com.yp.ahrenix.controller;
 
 import com.yp.ahrenix.dto.common.ApiResponse;
-import com.yp.ahrenix.entities.Account;
+import com.yp.ahrenix.dto.request.AccountRequest;
+import com.yp.ahrenix.dto.response.AccountResponse;
 import com.yp.ahrenix.entities.User;
-import com.yp.ahrenix.mapper.AccountMapper;
 import com.yp.ahrenix.security.UserPrincipal;
 import com.yp.ahrenix.service.AccountService;
 import com.yp.ahrenix.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,26 +25,55 @@ public class AccountController {
 
     private final UserService userService;
 
-    private final AccountMapper accountMapper;
-
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<List<Account>>> getMyAccounts(
+    public ResponseEntity<ApiResponse<List<AccountResponse>>>
+    getMyAccounts(
             @AuthenticationPrincipal UserPrincipal principal
     ) {
 
         User user = userService.getUserByEmail(
                 principal.getEmail()
         );
-        
 
-        List<Account> accounts =
-                accountService.getAccountsByUser(user);
+        List<AccountResponse> accounts =
+                accountService.getAccountsByUser(user)
+                        .stream()
+                        .map(accountService::mapToResponse)
+                        .toList();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<Account>>builder()
+                ApiResponse.<List<AccountResponse>>builder()
                         .success(true)
                         .message("Accounts fetched successfully")
                         .data(accounts)
+                        .build()
+        );
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<AccountResponse>>
+    createAccount(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody AccountRequest request,
+            HttpServletRequest servletRequest
+    ) {
+
+        User user = userService.getUserByEmail(
+                principal.getEmail()
+        );
+
+        AccountResponse response =
+                accountService.createAccount(
+                        user,
+                        request,
+                        servletRequest
+                );
+
+        return ResponseEntity.ok(
+                ApiResponse.<AccountResponse>builder()
+                        .success(true)
+                        .message("Account created successfully")
+                        .data(response)
                         .build()
         );
     }
