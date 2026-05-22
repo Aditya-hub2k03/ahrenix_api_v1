@@ -66,7 +66,7 @@ public class AccountController {
                 accountService.createAccount(
                         user,
                         request,
-                        servletRequest
+                        servletRequest.getRemoteAddr()
                 );
 
         return ResponseEntity.ok(
