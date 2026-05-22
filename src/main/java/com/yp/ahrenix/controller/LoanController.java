@@ -1,8 +1,9 @@
 package com.yp.ahrenix.controller;
 
 import com.yp.ahrenix.dto.common.ApiResponse;
-import com.yp.ahrenix.entities.Loan;
+import com.yp.ahrenix.dto.response.LoanResponse;
 import com.yp.ahrenix.entities.User;
+import com.yp.ahrenix.mapper.LoanMapper;
 import com.yp.ahrenix.security.UserPrincipal;
 import com.yp.ahrenix.service.LoanService;
 import com.yp.ahrenix.service.UserService;
@@ -22,8 +23,10 @@ public class LoanController {
 
     private final UserService userService;
 
+    private final LoanMapper loanMapper;
+
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<List<Loan>>>
+    public ResponseEntity<ApiResponse<List<LoanResponse>>>
     getMyLoans(
             @AuthenticationPrincipal UserPrincipal principal
     ) {
@@ -32,11 +35,14 @@ public class LoanController {
                 principal.getEmail()
         );
 
-        List<Loan> loans =
-                loanService.getUserLoans(user);
+        List<LoanResponse> loans =
+                loanService.getUserLoans(user)
+                        .stream()
+                        .map(loanMapper::toResponse)
+                        .toList();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<Loan>>builder()
+                ApiResponse.<List<LoanResponse>>builder()
                         .success(true)
                         .message("Loans fetched successfully")
                         .data(loans)
