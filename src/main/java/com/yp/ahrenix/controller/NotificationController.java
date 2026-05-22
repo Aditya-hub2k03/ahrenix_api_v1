@@ -1,8 +1,9 @@
 package com.yp.ahrenix.controller;
 
 import com.yp.ahrenix.dto.common.ApiResponse;
-import com.yp.ahrenix.entities.Notification;
+import com.yp.ahrenix.dto.response.NotificationResponse;
 import com.yp.ahrenix.entities.User;
+import com.yp.ahrenix.mapper.NotificationMapper;
 import com.yp.ahrenix.security.UserPrincipal;
 import com.yp.ahrenix.service.NotificationService;
 import com.yp.ahrenix.service.UserService;
@@ -22,8 +23,10 @@ public class NotificationController {
 
     private final UserService userService;
 
+    private final NotificationMapper notificationMapper;
+
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<List<Notification>>>
+    public ResponseEntity<ApiResponse<List<NotificationResponse>>>
     getMyNotifications(
             @AuthenticationPrincipal UserPrincipal principal
     ) {
@@ -32,11 +35,14 @@ public class NotificationController {
                 principal.getEmail()
         );
 
-        List<Notification> notifications =
-                notificationService.getUserNotifications(user);
+        List<NotificationResponse> notifications =
+                notificationService.getUserNotifications(user)
+                        .stream()
+                        .map(notificationMapper::toResponse)
+                        .toList();
 
         return ResponseEntity.ok(
-                ApiResponse.<List<Notification>>builder()
+                ApiResponse.<List<NotificationResponse>>builder()
                         .success(true)
                         .message("Notifications fetched successfully")
                         .data(notifications)
