@@ -24,4 +24,8 @@ public class NotificationResponse {
 
     private LocalDateTime createdAt;
 
+    private Long userId;
+
+    private String userName;
+
 }
