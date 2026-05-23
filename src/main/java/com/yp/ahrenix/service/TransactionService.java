@@ -1,5 +1,6 @@
 package com.yp.ahrenix.service;
 
+import com.yp.ahrenix.dto.common.PagedResponse;
 import com.yp.ahrenix.dto.request.TransactionRequest;
 import com.yp.ahrenix.dto.response.TransactionResponse;
 import com.yp.ahrenix.entities.Account;
@@ -17,6 +18,12 @@ import com.yp.ahrenix.util.TransactionReferenceGenerator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -121,6 +128,50 @@ public TransactionResponse transferMoney(
     );
 
     return transactionMapper.toResponse(savedTransaction);
+}
+
+public PagedResponse<TransactionResponse>
+getTransactionHistory(
+        User user,
+        int page,
+        int size
+) {
+
+    Account account =
+            accountRepository.findByUser(user)
+                    .stream()
+                    .findFirst()
+                    .orElseThrow();
+
+    Pageable pageable =
+            PageRequest.of(page, size);
+
+    Page<Transaction> transactions =
+            transactionRepository
+                    .findBySenderAccountOrReceiverAccount(
+                            account,
+                            account,
+                            pageable
+                    );
+
+    List<TransactionResponse> content =
+            transactions.getContent()
+                    .stream()
+                    .map(transactionMapper::toResponse)
+                    .toList();
+
+    return PagedResponse.<TransactionResponse>builder()
+            .content(content)
+            .page(transactions.getNumber())
+            .size(transactions.getSize())
+            .totalElements(
+                    transactions.getTotalElements()
+            )
+            .totalPages(
+                    transactions.getTotalPages()
+            )
+            .last(transactions.isLast())
+            .build();
 }
 
 }

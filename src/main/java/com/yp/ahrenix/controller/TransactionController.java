@@ -1,6 +1,7 @@
 package com.yp.ahrenix.controller;
 
 import com.yp.ahrenix.dto.common.ApiResponse;
+import com.yp.ahrenix.dto.common.PagedResponse;
 import com.yp.ahrenix.dto.request.TransactionRequest;
 import com.yp.ahrenix.dto.response.TransactionResponse;
 import com.yp.ahrenix.entities.Transaction;
@@ -77,5 +78,35 @@ public class TransactionController {
                         .build()
         );
     }
+
+    @GetMapping("/history")
+public ResponseEntity<ApiResponse<PagedResponse<TransactionResponse>>>
+getTransactionHistory(
+        @AuthenticationPrincipal UserPrincipal principal,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+) {
+
+    User user =
+            userService.getUserByEmail(
+                    principal.getEmail()
+            );
+
+    PagedResponse<TransactionResponse> response =
+            transactionService.getTransactionHistory(
+                    user,
+                    page,
+                    size
+            );
+
+    return ResponseEntity.ok(
+            ApiResponse.<PagedResponse<TransactionResponse>>
+                    builder()
+                    .success(true)
+                    .message("Transaction history fetched")
+                    .data(response)
+                    .build()
+    );
+}
 
 }
