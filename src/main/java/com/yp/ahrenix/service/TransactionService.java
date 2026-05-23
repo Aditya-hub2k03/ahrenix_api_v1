@@ -4,14 +4,17 @@ import com.yp.ahrenix.dto.common.PagedResponse;
 import com.yp.ahrenix.dto.request.TransactionRequest;
 import com.yp.ahrenix.dto.response.TransactionResponse;
 import com.yp.ahrenix.entities.Account;
+import com.yp.ahrenix.entities.IdempotencyKey;
 import com.yp.ahrenix.entities.Transaction;
 import com.yp.ahrenix.entities.User;
 import com.yp.ahrenix.enums.TransactionStatus;
 import com.yp.ahrenix.enums.TransactionType;
+import com.yp.ahrenix.exception.BadRequestException;
 import com.yp.ahrenix.exception.InsufficientBalanceException;
 import com.yp.ahrenix.exception.ResourceNotFoundException;
 import com.yp.ahrenix.mapper.TransactionMapper;
 import com.yp.ahrenix.repository.AccountRepository;
+import com.yp.ahrenix.repository.IdempotencyKeyRepository;
 import com.yp.ahrenix.repository.TransactionRepository;
 import com.yp.ahrenix.util.TransactionReferenceGenerator;
 
@@ -35,6 +38,7 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final KafkaProducerService kafkaProducerService;
     private final AuditService auditService;
+    private final IdempotencyKeyRepository idempotencyKeyRepository;
 
     public Transaction getTransactionByReferenceId(
             String referenceId
@@ -54,6 +58,26 @@ public TransactionResponse transferMoney(
         TransactionRequest request,
         String ipAddress
 ) {
+        String idempotencyKey =
+        request.getIdempotencyKey();
+
+if(idempotencyKeyRepository
+        .findByIdempotencyKey(idempotencyKey)
+        .isPresent()) {
+
+    throw new BadRequestException(
+            "Duplicate transaction request"
+    );
+    
+}
+IdempotencyKey key =
+        IdempotencyKey.builder()
+                .idempotencyKey(idempotencyKey)
+                .endpoint("/transactions/transfer")
+                .processed(true)
+                .build();
+
+idempotencyKeyRepository.save(key);
 
     Account senderAccount =
             accountRepository.findByUser(user)
@@ -128,6 +152,8 @@ public TransactionResponse transferMoney(
     );
 
     return transactionMapper.toResponse(savedTransaction);
+
+    
 }
 
 public PagedResponse<TransactionResponse>
@@ -173,5 +199,6 @@ getTransactionHistory(
             .last(transactions.isLast())
             .build();
 }
+
 
 }

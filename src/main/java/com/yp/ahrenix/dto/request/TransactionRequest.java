@@ -23,4 +23,7 @@ public class TransactionRequest {
 
     private String description;
 
+    @NotBlank(message = "Idempotency key is required")
+    private String idempotencyKey;
+
 }
