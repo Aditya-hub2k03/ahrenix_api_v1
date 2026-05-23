@@ -24,4 +24,8 @@ public class LoanResponse {
 
     private LoanStatus status;
 
+    private Long userId;
+
+    private String userName;
+
 }
