@@ -78,4 +78,38 @@ public class AccountController {
         );
     }
 
+    @PatchMapping("/{accountNumber}/freeze")
+public ResponseEntity<ApiResponse<String>>
+freezeAccount(
+        @PathVariable String accountNumber
+) {
+
+    accountService.freezeAccount(accountNumber);
+
+    return ResponseEntity.ok(
+            ApiResponse.<String>builder()
+                    .success(true)
+                    .message("Account frozen")
+                    .data("SUCCESS")
+                    .build()
+    );
+}
+
+@PatchMapping("/{accountNumber}/close")
+public ResponseEntity<ApiResponse<String>>
+closeAccount(
+        @PathVariable String accountNumber
+) {
+
+    accountService.closeAccount(accountNumber);
+
+    return ResponseEntity.ok(
+            ApiResponse.<String>builder()
+                    .success(true)
+                    .message("Account closed")
+                    .data("SUCCESS")
+                    .build()
+    );
+}
+
 }

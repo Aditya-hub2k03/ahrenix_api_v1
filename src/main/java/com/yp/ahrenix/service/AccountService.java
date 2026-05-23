@@ -84,4 +84,31 @@ public AccountResponse createAccount(
     return accountMapper.toResponse(savedAccount);
 }
 
+
+@Transactional
+public void freezeAccount(
+        String accountNumber
+) {
+
+    Account account =
+            getAccountByAccountNumber(accountNumber);
+
+    account.setStatus(AccountStatus.FROZEN);
+
+    accountRepository.save(account);
+}
+
+@Transactional
+public void closeAccount(
+        String accountNumber
+) {
+
+    Account account =
+            getAccountByAccountNumber(accountNumber);
+
+    account.setStatus(AccountStatus.CLOSED);
+
+    accountRepository.save(account);
+}
+
 }
