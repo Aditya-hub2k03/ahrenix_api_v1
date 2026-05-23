@@ -32,4 +32,8 @@ public class TransactionResponse {
 
     private LocalDateTime createdAt;
 
+    private String senderName;
+    
+    private String receiverName;
+
 }
