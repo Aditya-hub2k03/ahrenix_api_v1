@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: ahrenix-backend
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: ahrenix-backend
+
+  template:
+    metadata:
+      labels:
+        app: ahrenix-backend
+
+    spec:
+      containers:
+        - name: ahrenix-backend
+
+          image: ahrenix/backend:latest
+
+          ports:
+            - containerPort: 8080
