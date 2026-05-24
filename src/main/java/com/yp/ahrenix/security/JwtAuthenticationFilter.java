@@ -1,5 +1,6 @@
 package com.yp.ahrenix.security;
 
+import com.yp.ahrenix.service.JwtBlacklistService;
 import com.yp.ahrenix.util.JwtUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     private final CustomUserDetailsService customUserDetailsService;
+
+    private final JwtBlacklistService jwtBlacklistService;
 
     @Override
     protected void doFilterInternal(
@@ -46,6 +49,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             UserDetails userDetails =
                     customUserDetailsService.loadUserByUsername(email);
+
+        
+                if(jwtBlacklistService.isBlacklisted(token)) {
+                        filterChain.doFilter(request, response);
+                        return;
+                
+                }
 
             if (jwtUtil.validateToken(token)) {
 
