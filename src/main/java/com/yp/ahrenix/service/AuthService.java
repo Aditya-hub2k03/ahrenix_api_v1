@@ -126,12 +126,17 @@ public class AuthService {
             RefreshTokenRequest request
     ) {
 
-        RefreshToken refreshToken =
-                refreshTokenService.verifyRefreshToken(
-                        request.getRefreshToken()
-                );
+        RefreshToken oldToken =
+        refreshTokenService.verifyRefreshToken(
+                request.getRefreshToken()
+        );
 
-        User user = refreshToken.getUser();
+RefreshToken newToken =
+        refreshTokenService.rotateRefreshToken(
+                oldToken
+        );
+
+        User user = newToken.getUser();
 
         String accessToken =
                 jwtUtil.generateToken(user.getEmail());
@@ -139,7 +144,7 @@ public class AuthService {
         return buildAuthResponse(
                 user,
                 accessToken,
-                refreshToken.getToken()
+                newToken.getToken()
         );
     }
 

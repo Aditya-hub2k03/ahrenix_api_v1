@@ -64,4 +64,15 @@ public class RefreshTokenService {
         refreshTokenRepository.deleteByUser(user);
     }
 
+    public RefreshToken rotateRefreshToken(
+        RefreshToken oldToken
+) {
+
+    oldToken.setRevoked(true);
+
+    refreshTokenRepository.save(oldToken);
+
+    return createRefreshToken(oldToken.getUser());
+}
+
 }
