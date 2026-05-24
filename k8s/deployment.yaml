@@ -22,5 +22,39 @@ spec:
 
           image: ahrenix/backend:latest
 
+          imagePullPolicy: Always
+
           ports:
             - containerPort: 8080
+
+          envFrom:
+            - configMapRef:
+                name: ahrenix-config
+
+            - secretRef:
+                name: ahrenix-secret
+
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+
+            initialDelaySeconds: 30
+            periodSeconds: 15

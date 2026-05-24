@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: ahrenix-ingress
+
+spec:
+  rules:
+    - host: api.ahrenix.com
+
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+
+            backend:
+              service:
+                name: ahrenix-service
+
+                port:
+                  number: 80

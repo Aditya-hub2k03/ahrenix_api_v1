@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: ahrenix-config
+
+data:
+  SPRING_PROFILES_ACTIVE: prod
+
+  DB_URL: jdbc:postgresql://postgres:5432/ahrenix
+
+  REDIS_HOST: redis
+
+  REDIS_PORT: "6379"
+
+  KAFKA_BOOTSTRAP_SERVERS: kafka:9092
