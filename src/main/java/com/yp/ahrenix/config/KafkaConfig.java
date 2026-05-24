@@ -43,4 +43,14 @@ public class KafkaConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic transactionDLQ() {
+
+    return TopicBuilder
+            .name("transactions-created-dlq")
+            .partitions(3)
+            .replicas(1)
+            .build();
+    }
+
 }
