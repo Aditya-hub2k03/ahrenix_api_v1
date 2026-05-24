@@ -14,17 +14,20 @@
         </Console>
 
         <RollingFile name="RollingFile"
-                     fileName="logs/ahrenix.log"
-                     filePattern="logs/archive/ahrenix-%d{yyyy-MM-dd}-%i.log.gz">
+             fileName="logs/ahrenix.log"
+             filePattern="logs/archive/ahrenix-%d{yyyy-MM-dd}-%i.log.gz">
 
-            <PatternLayout pattern="${LOG_PATTERN}"/>
+    <JsonLayout
+            complete="false"
+            compact="true"
+            eventEol="true"/>
 
-            <Policies>
-                <TimeBasedTriggeringPolicy interval="1"/>
-                <SizeBasedTriggeringPolicy size="10 MB"/>
-            </Policies>
+    <Policies>
+        <TimeBasedTriggeringPolicy interval="1"/>
+        <SizeBasedTriggeringPolicy size="10 MB"/>
+    </Policies>
 
-        </RollingFile>
+</RollingFile>
 
     </Appenders>
 
