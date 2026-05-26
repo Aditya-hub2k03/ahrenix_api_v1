@@ -3,7 +3,7 @@
 <h1>AHRenix <p>A HRe nix</p></h1>
 
 <p>Meaning: A Human-Relationship(HR) assurance(nix- old english term)</p>
-A spring boot backend api<br>
+A spring boot rest backend api<br>
 <ul>
   <li>Java:java.version:17</li>
   <li>Spring Boot Parent:org.springframework.boot:spring-boot-starter-parent:3.5.0</li>
